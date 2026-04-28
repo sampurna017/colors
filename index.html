@@ -15,300 +15,120 @@ body{
  overflow:hidden;
 }
 
-/* 🌌 MENU */
-.menuTheme{
- background: radial-gradient(circle at top, #1a1a2e, #0f0f1a);
+/* 🌌 BACKGROUND PARTICLES */
+body::before{
+ content:"";
+ position:fixed;
+ width:200%;
+ height:200%;
+ background: radial-gradient(white 1px, transparent 1px);
+ background-size:40px 40px;
+ opacity:0.08;
+ animation: moveBg 20s linear infinite;
+ z-index:-1;
+}
+@keyframes moveBg{
+ from{transform:translate(0,0);}
+ to{transform:translate(-200px,-200px);}
 }
 
-/* 🟦 EASY (calm neon blue) */
-.easy{
- background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
-}
-
-/* 🟧 MEDIUM (warm glowing orange) */
-.medium{
- background: radial-gradient(circle at top, #42275a, #734b6d);
-}
-
-/* 🔴 HARD (danger red glow) */
-.hard{
- background: radial-gradient(circle at top, #200000, #600000);
-}
-
-/* ⚫ EXTREME (dark void) */
-.extreme{
- background: radial-gradient(circle, #000000, #050505);
-}
-
-/* 👾 BOSS (animated glow) */
+/* 🎨 THEMES */
+.menuTheme{background: radial-gradient(circle,#1a1a2e,#0f0f1a);}
+.easy{background: radial-gradient(circle,#00c6ff,#0072ff);}
+.medium{background: radial-gradient(circle,#ff7e5f,#feb47b);}
+.hard{background: radial-gradient(circle,#ff416c,#ff4b2b);}
+.extreme{background: radial-gradient(circle,#000,#1a1a1a);}
 .bossTheme{
- background: radial-gradient(circle, #111, #000);
- animation: bossPulse 2s infinite alternate;
+ background: radial-gradient(circle,#000,#111);
+ animation: bossPulse 1s infinite alternate;
 }
-
 @keyframes bossPulse{
  from{filter:brightness(1);}
  to{filter:brightness(1.4);}
 }
 
-/* ✨ GAME CONTAINER */
+/* 🎮 GAME */
 #game{
  width:95vw;
  max-width:520px;
  height:280px;
  margin:40px auto;
- border:2px solid rgba(255,255,255,0.2);
  border-radius:12px;
  position:relative;
  overflow:hidden;
- backdrop-filter: blur(6px);
- box-shadow: 0 0 20px rgba(255,255,255,0.1);
+ border:2px solid rgba(255,255,255,0.2);
+ backdrop-filter: blur(10px);
+ box-shadow:
+ 0 0 20px rgba(255,255,255,0.1),
+ inset 0 0 20px rgba(255,255,255,0.05);
 }
 
-/* 🧊 PLAYER */
+/* PLAYER */
 #player{
- width:30px;
- height:30px;
+ width:30px;height:30px;
  border-radius:10px;
- position:absolute;
- bottom:0;
- left:20px;
- box-shadow: 0 0 12px currentColor;
+ position:absolute;bottom:0;left:20px;
+ box-shadow:0 0 15px currentColor;
 }
 
-/* 🔲 BLOCKS */
-.block{
- width:30px;
- height:30px;
- position:absolute;
- bottom:0;
- border-radius:6px;
- box-shadow:0 0 10px rgba(255,255,255,0.2);
-}
-
-.red{background:#ff3b3b; box-shadow:0 0 12px red;}
-.blue{background:#3b8cff; box-shadow:0 0 12px blue;}
-.goal{background:#00ff88; box-shadow:0 0 15px #00ff88;}
+/* BLOCKS */
+.block{width:30px;height:30px;position:absolute;bottom:0;border-radius:6px;}
+.red{background:#ff3b3b;box-shadow:0 0 12px red;}
+.blue{background:#3b8cff;box-shadow:0 0 12px blue;}
+.goal{background:#00ff88;box-shadow:0 0 15px #00ff88;}
 .spike{
  background:#ff9900;
  clip-path:polygon(50% 0%,0% 100%,100% 100%);
  box-shadow:0 0 10px orange;
 }
-
-/* 🟫 PLATFORM */
-.platform{
- background:#ccc;
- height:10px;
- border-radius:4px;
- box-shadow:0 0 8px #aaa;
-}
-
-/* 🌀 PORTAL */
+.platform{background:#ccc;height:10px;border-radius:4px;}
 .portal{
- background: radial-gradient(circle, purple, black);
+ background:radial-gradient(circle,purple,black);
  border-radius:50%;
- animation: spin 2s linear infinite;
+ animation:spin 2s linear infinite;
 }
 @keyframes spin{
- from{transform:rotate(0deg);}
+ from{transform:rotate(0);}
  to{transform:rotate(360deg);}
 }
-
-/* 👾 BOSS */
 .boss{
  background:white;
- width:40px;
- height:40px;
+ width:40px;height:40px;
  border-radius:8px;
  box-shadow:0 0 20px white;
- animation: bossMove 0.5s infinite alternate;
+ animation:bossMove 0.5s infinite alternate;
 }
 @keyframes bossMove{
  from{transform:translateY(0);}
  to{transform:translateY(-5px);}
 }
 
-/* 🔘 BUTTONS */
+/* UI */
 button{
- padding:10px;
- margin:6px;
- border:none;
- border-radius:8px;
+ padding:10px;margin:5px;
+ border:none;border-radius:8px;
  background:rgba(255,255,255,0.1);
  color:white;
- backdrop-filter: blur(6px);
- transition:0.2s;
+ backdrop-filter:blur(6px);
 }
-button:hover{
- background:rgba(255,255,255,0.3);
- transform:scale(1.05);
+button:hover{background:rgba(255,255,255,0.3);}
+
+#levelSelect{display:none;}
+.levelBtn{width:45px;height:45px;margin:4px;position:relative;}
+.check{position:absolute;top:2px;right:4px;color:#00ff88;font-size:12px;}
+
+.modal{
+ display:none;position:fixed;
+ width:100%;height:100%;
+ background:rgba(0,0,0,0.7);
+ justify-content:center;align-items:center;
+}
+.modalBox{
+ background:#111;padding:20px;border:2px solid red;
 }
 
-/* 🎯 LEVEL BUTTON */
-.levelBtn{
- width:45px;
- height:45px;
- margin:4px;
- position:relative;
-}
-.check{
- position:absolute;
- top:2px;
- right:4px;
- color:#00ff88;
- font-size:12px;
-}body{
- margin:0;
- font-family:sans-serif;
- text-align:center;
- color:white;
- transition:0.5s;
- overflow:hidden;
-}
-
-/* 🌌 MENU */
-.menuTheme{
- background: radial-gradient(circle at top, #1a1a2e, #0f0f1a);
-}
-
-/* 🟦 EASY (calm neon blue) */
-.easy{
- background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
-}
-
-/* 🟧 MEDIUM (warm glowing orange) */
-.medium{
- background: radial-gradient(circle at top, #42275a, #734b6d);
-}
-
-/* 🔴 HARD (danger red glow) */
-.hard{
- background: radial-gradient(circle at top, #200000, #600000);
-}
-
-/* ⚫ EXTREME (dark void) */
-.extreme{
- background: radial-gradient(circle, #000000, #050505);
-}
-
-/* 👾 BOSS (animated glow) */
-.bossTheme{
- background: radial-gradient(circle, #111, #000);
- animation: bossPulse 2s infinite alternate;
-}
-
-@keyframes bossPulse{
- from{filter:brightness(1);}
- to{filter:brightness(1.4);}
-}
-
-/* ✨ GAME CONTAINER */
-#game{
- width:95vw;
- max-width:520px;
- height:280px;
- margin:40px auto;
- border:2px solid rgba(255,255,255,0.2);
- border-radius:12px;
- position:relative;
- overflow:hidden;
- backdrop-filter: blur(6px);
- box-shadow: 0 0 20px rgba(255,255,255,0.1);
-}
-
-/* 🧊 PLAYER */
-#player{
- width:30px;
- height:30px;
- border-radius:10px;
- position:absolute;
- bottom:0;
- left:20px;
- box-shadow: 0 0 12px currentColor;
-}
-
-/* 🔲 BLOCKS */
-.block{
- width:30px;
- height:30px;
- position:absolute;
- bottom:0;
- border-radius:6px;
- box-shadow:0 0 10px rgba(255,255,255,0.2);
-}
-
-.red{background:#ff3b3b; box-shadow:0 0 12px red;}
-.blue{background:#3b8cff; box-shadow:0 0 12px blue;}
-.goal{background:#00ff88; box-shadow:0 0 15px #00ff88;}
-.spike{
- background:#ff9900;
- clip-path:polygon(50% 0%,0% 100%,100% 100%);
- box-shadow:0 0 10px orange;
-}
-
-/* 🟫 PLATFORM */
-.platform{
- background:#ccc;
- height:10px;
- border-radius:4px;
- box-shadow:0 0 8px #aaa;
-}
-
-/* 🌀 PORTAL */
-.portal{
- background: radial-gradient(circle, purple, black);
- border-radius:50%;
- animation: spin 2s linear infinite;
-}
-@keyframes spin{
- from{transform:rotate(0deg);}
- to{transform:rotate(360deg);}
-}
-
-/* 👾 BOSS */
-.boss{
- background:white;
- width:40px;
- height:40px;
- border-radius:8px;
- box-shadow:0 0 20px white;
- animation: bossMove 0.5s infinite alternate;
-}
-@keyframes bossMove{
- from{transform:translateY(0);}
- to{transform:translateY(-5px);}
-}
-
-/* 🔘 BUTTONS */
-button{
- padding:10px;
- margin:6px;
- border:none;
- border-radius:8px;
- background:rgba(255,255,255,0.1);
- color:white;
- backdrop-filter: blur(6px);
- transition:0.2s;
-}
-button:hover{
- background:rgba(255,255,255,0.3);
- transform:scale(1.05);
-}
-
-/* 🎯 LEVEL BUTTON */
-.levelBtn{
- width:45px;
- height:45px;
- margin:4px;
- position:relative;
-}
-.check{
- position:absolute;
- top:2px;
- right:4px;
- color:#00ff88;
- font-size:12px;
-}
+#controls{position:fixed;bottom:10px;width:100%;display:none;}
+.ctrl{width:60px;height:60px;margin:5px;}
 </style>
 </head>
 
@@ -317,8 +137,8 @@ button:hover{
 <h1>🎮 Color Split</h1>
 
 <div id="menu">
- <button onclick="showLevels()">🎯 Levels</button>
- <button onclick="startGame(1)">▶️ Start</button>
+<button onclick="showLevels()">🎯 Levels</button>
+<button onclick="startGame(1)">▶️ Start</button>
 </div>
 
 <div id="levelSelect"></div>
@@ -326,62 +146,50 @@ button:hover{
 <div id="game"></div>
 
 <div id="inGameMenu" style="display:none;">
- <button onclick="restartGame()">🔄 Restart</button>
- <button onclick="exitGame()">🚪 Exit</button>
+<button onclick="restartGame()">🔄 Restart</button>
+<button onclick="exitGame()">🚪 Exit</button>
 </div>
 
 <div id="gameOverModal" class="modal">
- <div class="modalBox">
-  <h2>💀 Game Over</h2>
-  <button onclick="restartGame()">Restart</button>
-  <button onclick="exitGame()">Menu</button>
- </div>
+<div class="modalBox">
+<h2>💀 Game Over</h2>
+<button onclick="restartGame()">Restart</button>
+<button onclick="exitGame()">Menu</button>
+</div>
 </div>
 
-<div id="finalPopup">
- <h2>🎉 You completed all 50 levels!</h2>
- <button onclick="exitGame()">Menu</button>
+<div id="finalPopup" style="display:none;">
+<h2>🎉 Completed!</h2>
+<button onclick="exitGame()">Menu</button>
 </div>
 
 <div id="controls">
- <button class="ctrl" onclick="move(-1)">⬅️</button>
- <button class="ctrl" onclick="jump()">⬆️</button>
- <button class="ctrl" onclick="move(1)">➡️</button>
- <button class="ctrl" onclick="switchColor()">🎨</button>
+<button class="ctrl" onclick="move(-1)">⬅️</button>
+<button class="ctrl" onclick="jump()">⬆️</button>
+<button class="ctrl" onclick="move(1)">➡️</button>
+<button class="ctrl" onclick="switchColor()">🎨</button>
 </div>
 
 <script>
 let game=document.getElementById("game");
 let player;
-
 let x=20,y=0,vy=0;
-let gravity=0.8;
-
 let mode="blue";
 let currentLevel=1;
 let lives=3;
 let running=false;
 let blocks=[];
+let completed=JSON.parse(localStorage.getItem("cs_levels"))||{};
 
-let completed = JSON.parse(localStorage.getItem("cs_levels")) || {};
-
-/* 🎯 FULL LEVEL DATA (NO RANDOM) */
-const levels = {
+const levels={
 1:[{type:"red",x:150},{type:"goal",x:500}],
-2:[{type:"blue",x:150},{type:"red",x:250},{type:"goal",x:500}],
-3:[{type:"spike",x:200},{type:"blue",x:320},{type:"goal",x:520}],
-4:[{type:"red",x:150},{type:"spike",x:250},{type:"blue",x:350},{type:"goal",x:520}],
-5:[{type:"platform",x:200,y:60},{type:"goal",x:500}],
+2:[{type:"blue",x:150},{type:"goal",x:500}],
+3:[{type:"spike",x:200},{type:"goal",x:520}],
 6:[{type:"portalA",x:150},{type:"portalB",x:400},{type:"goal",x:520}],
-7:[{type:"spike",x:150},{type:"spike",x:250},{type:"goal",x:500}],
-8:[{type:"platform",x:250,y:90},{type:"goal",x:520}],
-9:[{type:"red",x:120},{type:"blue",x:240},{type:"spike",x:360},{type:"goal",x:520}],
-10:[{type:"portalA",x:100},{type:"portalB",x:420},{type:"spike",x:250},{type:"goal",x:520}],
 49:[{type:"boss",x:250},{type:"goal",x:520}],
 50:[{type:"boss",x:200},{type:"boss",x:350},{type:"goal",x:520}]
 };
 
-/* Fill remaining levels deterministically */
 for(let i=1;i<=50;i++){
  if(!levels[i]){
   levels[i]=[
@@ -393,10 +201,8 @@ for(let i=1;i<=50;i++){
  }
 }
 
-/* 🎨 THEME SYSTEM */
 function setTheme(){
- document.body.classList.remove("menuTheme","easy","medium","hard","extreme","bossTheme");
-
+ document.body.className="";
  if(currentLevel<=12) document.body.classList.add("easy");
  else if(currentLevel<=24) document.body.classList.add("medium");
  else if(currentLevel<=36) document.body.classList.add("hard");
@@ -404,174 +210,111 @@ function setTheme(){
  else document.body.classList.add("bossTheme");
 }
 
-/* 🎯 LEVEL SELECT */
 function showLevels(){
  document.getElementById("menu").style.display="none";
-
  let grid=document.getElementById("levelSelect");
  grid.style.display="block";
- grid.innerHTML="<h2>Select Level</h2>";
-
+ grid.innerHTML="";
  for(let i=1;i<=50;i++){
-  let btn=document.createElement("button");
-  btn.className="levelBtn";
-  btn.innerText=i;
-
+  let b=document.createElement("button");
+  b.className="levelBtn";
+  b.innerText=i;
   if(completed[i]){
-   let mark=document.createElement("span");
-   mark.className="check";
-   mark.innerText="✔";
-   btn.appendChild(mark);
+   let c=document.createElement("span");
+   c.className="check";c.innerText="✔";
+   b.appendChild(c);
   }
-
-  btn.onclick=()=>startGame(i);
-  grid.appendChild(btn);
+  b.onclick=()=>startGame(i);
+  grid.appendChild(b);
  }
 }
 
-/* ▶️ START */
-function startGame(lvl){
- currentLevel=lvl;
- lives=3;
-
+function startGame(l){
+ currentLevel=l;lives=3;
  document.getElementById("menu").style.display="none";
  document.getElementById("levelSelect").style.display="none";
- document.getElementById("inGameMenu").style.display="block";
  document.getElementById("controls").style.display="block";
+ document.getElementById("inGameMenu").style.display="block";
  game.style.display="block";
-
  running=true;
  loadLevel();
 }
 
-/* 🔄 RESTART */
 function restartGame(){
  lives=3;
- running=true;
  document.getElementById("gameOverModal").style.display="none";
  loadLevel();
 }
 
-/* 🚪 EXIT */
 function exitGame(){
  running=false;
  game.style.display="none";
  document.getElementById("menu").style.display="block";
- document.getElementById("levelSelect").style.display="none";
- document.getElementById("inGameMenu").style.display="none";
  document.getElementById("controls").style.display="none";
- document.getElementById("gameOverModal").style.display="none";
- document.getElementById("finalPopup").style.display="none";
-
+ document.getElementById("inGameMenu").style.display="none";
  document.body.className="menuTheme";
 }
 
-/* LOAD LEVEL */
 function loadLevel(){
  game.innerHTML='<div id="player"></div>';
  player=document.getElementById("player");
-
  x=20;y=0;vy=0;
  blocks=[];
-
  levels[currentLevel].forEach(b=>{
   let d=document.createElement("div");
-
-  if(b.type==="platform"){
-   d.className="block platform";
-   d.style.bottom=b.y+"px";
-  }else if(b.type==="portalA"||b.type==="portalB"){
-   d.className="block portal";
-  }else if(b.type==="boss"){
-   d.className="block boss";
-  }else{
-   d.className="block "+b.type;
-  }
-
+  d.className="block "+(b.type==="portalA"||b.type==="portalB"?"portal":b.type);
   d.style.left=b.x+"px";
+  if(b.type==="platform") d.style.bottom=b.y+"px";
   game.appendChild(d);
-  blocks.push({el:d,...b,dir:1});
+  blocks.push({...b,el:d});
  });
-
  setTheme();
- updateHUD();
 }
 
-/* GAME LOOP */
 setInterval(()=>{
- if(!running) return;
-
- vy+=gravity;
- y+=vy;
- if(y>0){y=0;vy=0;}
-
- blocks.forEach(b=>{
-  if(b.type==="boss"){
-   b.x+=b.dir*3;
-   if(b.x>450||b.x<100) b.dir*=-1;
-   b.el.style.left=b.x+"px";
-  }
-
-  if(b.type==="platform"){
-   if(Math.abs(x-b.x)<30 && y<=b.y){
-    y=b.y;
-    vy=0;
-   }
-  }
- });
-
+ if(!running)return;
+ vy+=0.8;y+=vy;if(y>0){y=0;vy=0;}
  player.style.left=x+"px";
  player.style.bottom=y+"px";
  player.style.background=mode;
-
  check();
 },30);
 
-/* CONTROLS */
-document.addEventListener("keydown",(e)=>{
- if(!running) return;
-
- if(e.key==="ArrowRight") x+=6;
- if(e.key==="ArrowLeft") x-=6;
- if(e.key==="ArrowUp" && y===0) vy=-14;
- if(e.code==="Space") switchColor();
+document.addEventListener("keydown",e=>{
+ if(!running)return;
+ if(e.key==="ArrowRight")x+=6;
+ if(e.key==="ArrowLeft")x-=6;
+ if(e.key==="ArrowUp"&&y===0)vy=-14;
+ if(e.code==="Space")switchColor();
 });
 
 function move(d){x+=d*6;}
 function jump(){if(y===0)vy=-14;}
 function switchColor(){mode=mode==="blue"?"red":"blue";}
 
-/* COLLISION */
 function hit(px,b){return Math.abs(px-b.x)<25;}
 
 function check(){
- let portalA=null, portalB=null;
-
+ let A,B;
  blocks.forEach(b=>{
-  if(b.type==="portalA") portalA=b;
-  if(b.type==="portalB") portalB=b;
+  if(b.type==="portalA")A=b;
+  if(b.type==="portalB")B=b;
  });
-
  blocks.forEach(b=>{
   if(hit(x,b)){
-
    if(b.type==="goal"){
     completed[currentLevel]=true;
     localStorage.setItem("cs_levels",JSON.stringify(completed));
-
     currentLevel++;
-
     if(currentLevel>50){
-     running=false;
      document.getElementById("finalPopup").style.display="block";
+     running=false;
     }else loadLevel();
    }
-
-   if(b.type==="portalA" && portalB) x=portalB.x;
-
-   if(b.type==="spike"||b.type==="boss") damage();
-   if(b.type==="red" && mode!=="red") damage();
-   if(b.type==="blue" && mode!=="blue") damage();
+   if(b.type==="portalA"&&B)x=B.x;
+   if(b.type==="spike"||b.type==="boss")damage();
+   if(b.type==="red"&&mode!=="red")damage();
+   if(b.type==="blue"&&mode!=="blue")damage();
   }
  });
 }
@@ -582,12 +325,6 @@ function damage(){
   running=false;
   document.getElementById("gameOverModal").style.display="flex";
  }
- updateHUD();
-}
-
-function updateHUD(){
- document.getElementById("hud").innerText =
- "Level:"+currentLevel+" | Lives:"+lives;
 }
 </script>
 
