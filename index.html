@@ -6,71 +6,309 @@
 <title>Color Split</title>
 
 <style>
-body{margin:0;font-family:sans-serif;text-align:center;color:white;transition:0.4s;}
-.menuTheme{background:linear-gradient(#0a0a0a,#1a1a2e);}
-.easy{background:linear-gradient(#003,#0a5);}
-.medium{background:linear-gradient(#220,#a60);}
-.hard{background:linear-gradient(#200,#600);}
-.extreme{background:#050505;}
-.bossTheme{background:radial-gradient(circle,#111,#000);}
+body{
+ margin:0;
+ font-family:sans-serif;
+ text-align:center;
+ color:white;
+ transition:0.5s;
+ overflow:hidden;
+}
 
-h1{margin:10px;}
+/* 🌌 MENU */
+.menuTheme{
+ background: radial-gradient(circle at top, #1a1a2e, #0f0f1a);
+}
 
+/* 🟦 EASY (calm neon blue) */
+.easy{
+ background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
+}
+
+/* 🟧 MEDIUM (warm glowing orange) */
+.medium{
+ background: radial-gradient(circle at top, #42275a, #734b6d);
+}
+
+/* 🔴 HARD (danger red glow) */
+.hard{
+ background: radial-gradient(circle at top, #200000, #600000);
+}
+
+/* ⚫ EXTREME (dark void) */
+.extreme{
+ background: radial-gradient(circle, #000000, #050505);
+}
+
+/* 👾 BOSS (animated glow) */
+.bossTheme{
+ background: radial-gradient(circle, #111, #000);
+ animation: bossPulse 2s infinite alternate;
+}
+
+@keyframes bossPulse{
+ from{filter:brightness(1);}
+ to{filter:brightness(1.4);}
+}
+
+/* ✨ GAME CONTAINER */
 #game{
- width:95vw;max-width:520px;height:280px;
- margin:20px auto;border:2px solid white;
- position:relative;display:none;overflow:hidden;
+ width:95vw;
+ max-width:520px;
+ height:280px;
+ margin:40px auto;
+ border:2px solid rgba(255,255,255,0.2);
+ border-radius:12px;
+ position:relative;
+ overflow:hidden;
+ backdrop-filter: blur(6px);
+ box-shadow: 0 0 20px rgba(255,255,255,0.1);
 }
 
-.block{width:30px;height:30px;position:absolute;bottom:0;}
-.red{background:red;}
-.blue{background:blue;}
-.goal{background:lime;}
-.spike{background:orange;clip-path:polygon(50% 0%,0% 100%,100% 100%);}
-.platform{background:#aaa;height:10px;}
-.portal{background:purple;border-radius:50%;}
-.boss{background:white;width:40px;height:40px;}
-
+/* 🧊 PLAYER */
 #player{
- width:30px;height:30px;
- position:absolute;bottom:0;left:20px;
+ width:30px;
+ height:30px;
+ border-radius:10px;
+ position:absolute;
+ bottom:0;
+ left:20px;
+ box-shadow: 0 0 12px currentColor;
+}
+
+/* 🔲 BLOCKS */
+.block{
+ width:30px;
+ height:30px;
+ position:absolute;
+ bottom:0;
+ border-radius:6px;
+ box-shadow:0 0 10px rgba(255,255,255,0.2);
+}
+
+.red{background:#ff3b3b; box-shadow:0 0 12px red;}
+.blue{background:#3b8cff; box-shadow:0 0 12px blue;}
+.goal{background:#00ff88; box-shadow:0 0 15px #00ff88;}
+.spike{
+ background:#ff9900;
+ clip-path:polygon(50% 0%,0% 100%,100% 100%);
+ box-shadow:0 0 10px orange;
+}
+
+/* 🟫 PLATFORM */
+.platform{
+ background:#ccc;
+ height:10px;
+ border-radius:4px;
+ box-shadow:0 0 8px #aaa;
+}
+
+/* 🌀 PORTAL */
+.portal{
+ background: radial-gradient(circle, purple, black);
+ border-radius:50%;
+ animation: spin 2s linear infinite;
+}
+@keyframes spin{
+ from{transform:rotate(0deg);}
+ to{transform:rotate(360deg);}
+}
+
+/* 👾 BOSS */
+.boss{
+ background:white;
+ width:40px;
+ height:40px;
  border-radius:8px;
+ box-shadow:0 0 20px white;
+ animation: bossMove 0.5s infinite alternate;
+}
+@keyframes bossMove{
+ from{transform:translateY(0);}
+ to{transform:translateY(-5px);}
 }
 
+/* 🔘 BUTTONS */
 button{
- padding:10px;margin:5px;
- border:none;border-radius:6px;
- background:#222;color:white;
- font-weight:bold;
- cursor:pointer;
+ padding:10px;
+ margin:6px;
+ border:none;
+ border-radius:8px;
+ background:rgba(255,255,255,0.1);
+ color:white;
+ backdrop-filter: blur(6px);
+ transition:0.2s;
+}
+button:hover{
+ background:rgba(255,255,255,0.3);
+ transform:scale(1.05);
 }
 
-#levelSelect{display:none;max-width:520px;margin:auto;}
-.levelBtn{width:45px;height:45px;margin:4px;position:relative;}
-.check{position:absolute;top:2px;right:4px;color:lime;font-size:12px;}
+/* 🎯 LEVEL BUTTON */
+.levelBtn{
+ width:45px;
+ height:45px;
+ margin:4px;
+ position:relative;
+}
+.check{
+ position:absolute;
+ top:2px;
+ right:4px;
+ color:#00ff88;
+ font-size:12px;
+}body{
+ margin:0;
+ font-family:sans-serif;
+ text-align:center;
+ color:white;
+ transition:0.5s;
+ overflow:hidden;
+}
 
-.modal{
- display:none;position:fixed;top:0;left:0;
- width:100%;height:100%;
- background:rgba(0,0,0,0.7);
- justify-content:center;align-items:center;
-}
-.modalBox{
- background:#111;padding:20px;border:2px solid red;border-radius:8px;
+/* 🌌 MENU */
+.menuTheme{
+ background: radial-gradient(circle at top, #1a1a2e, #0f0f1a);
 }
 
-#finalPopup{
- display:none;position:fixed;
- top:50%;left:50%;
- transform:translate(-50%,-50%);
- background:#000;padding:30px;
- border:3px solid gold;
+/* 🟦 EASY (calm neon blue) */
+.easy{
+ background: radial-gradient(circle at top, #0f2027, #203a43, #2c5364);
 }
 
-#controls{
- position:fixed;bottom:10px;width:100%;display:none;
+/* 🟧 MEDIUM (warm glowing orange) */
+.medium{
+ background: radial-gradient(circle at top, #42275a, #734b6d);
 }
-.ctrl{width:60px;height:60px;margin:5px;}
+
+/* 🔴 HARD (danger red glow) */
+.hard{
+ background: radial-gradient(circle at top, #200000, #600000);
+}
+
+/* ⚫ EXTREME (dark void) */
+.extreme{
+ background: radial-gradient(circle, #000000, #050505);
+}
+
+/* 👾 BOSS (animated glow) */
+.bossTheme{
+ background: radial-gradient(circle, #111, #000);
+ animation: bossPulse 2s infinite alternate;
+}
+
+@keyframes bossPulse{
+ from{filter:brightness(1);}
+ to{filter:brightness(1.4);}
+}
+
+/* ✨ GAME CONTAINER */
+#game{
+ width:95vw;
+ max-width:520px;
+ height:280px;
+ margin:40px auto;
+ border:2px solid rgba(255,255,255,0.2);
+ border-radius:12px;
+ position:relative;
+ overflow:hidden;
+ backdrop-filter: blur(6px);
+ box-shadow: 0 0 20px rgba(255,255,255,0.1);
+}
+
+/* 🧊 PLAYER */
+#player{
+ width:30px;
+ height:30px;
+ border-radius:10px;
+ position:absolute;
+ bottom:0;
+ left:20px;
+ box-shadow: 0 0 12px currentColor;
+}
+
+/* 🔲 BLOCKS */
+.block{
+ width:30px;
+ height:30px;
+ position:absolute;
+ bottom:0;
+ border-radius:6px;
+ box-shadow:0 0 10px rgba(255,255,255,0.2);
+}
+
+.red{background:#ff3b3b; box-shadow:0 0 12px red;}
+.blue{background:#3b8cff; box-shadow:0 0 12px blue;}
+.goal{background:#00ff88; box-shadow:0 0 15px #00ff88;}
+.spike{
+ background:#ff9900;
+ clip-path:polygon(50% 0%,0% 100%,100% 100%);
+ box-shadow:0 0 10px orange;
+}
+
+/* 🟫 PLATFORM */
+.platform{
+ background:#ccc;
+ height:10px;
+ border-radius:4px;
+ box-shadow:0 0 8px #aaa;
+}
+
+/* 🌀 PORTAL */
+.portal{
+ background: radial-gradient(circle, purple, black);
+ border-radius:50%;
+ animation: spin 2s linear infinite;
+}
+@keyframes spin{
+ from{transform:rotate(0deg);}
+ to{transform:rotate(360deg);}
+}
+
+/* 👾 BOSS */
+.boss{
+ background:white;
+ width:40px;
+ height:40px;
+ border-radius:8px;
+ box-shadow:0 0 20px white;
+ animation: bossMove 0.5s infinite alternate;
+}
+@keyframes bossMove{
+ from{transform:translateY(0);}
+ to{transform:translateY(-5px);}
+}
+
+/* 🔘 BUTTONS */
+button{
+ padding:10px;
+ margin:6px;
+ border:none;
+ border-radius:8px;
+ background:rgba(255,255,255,0.1);
+ color:white;
+ backdrop-filter: blur(6px);
+ transition:0.2s;
+}
+button:hover{
+ background:rgba(255,255,255,0.3);
+ transform:scale(1.05);
+}
+
+/* 🎯 LEVEL BUTTON */
+.levelBtn{
+ width:45px;
+ height:45px;
+ margin:4px;
+ position:relative;
+}
+.check{
+ position:absolute;
+ top:2px;
+ right:4px;
+ color:#00ff88;
+ font-size:12px;
+}
 </style>
 </head>
 
