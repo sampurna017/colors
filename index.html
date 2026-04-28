@@ -6,37 +6,71 @@
 <title>Color Split</title>
 
 <style>
-body{margin:0;font-family:sans-serif;text-align:center;color:white;transition:0.5s;}
-.menuTheme{background:#111;}
-.easy{background:#003;}
-.medium{background:#220;}
-.hard{background:#200;}
-.extreme{background:#000;}
+body{margin:0;font-family:sans-serif;text-align:center;color:white;transition:0.4s;}
+.menuTheme{background:linear-gradient(#0a0a0a,#1a1a2e);}
+.easy{background:linear-gradient(#003,#0a5);}
+.medium{background:linear-gradient(#220,#a60);}
+.hard{background:linear-gradient(#200,#600);}
+.extreme{background:#050505;}
 .bossTheme{background:radial-gradient(circle,#111,#000);}
 
-#game{width:95vw;max-width:520px;height:280px;margin:60px auto;border:2px solid white;position:relative;display:none;overflow:hidden;}
+h1{margin:10px;}
+
+#game{
+ width:95vw;max-width:520px;height:280px;
+ margin:20px auto;border:2px solid white;
+ position:relative;display:none;overflow:hidden;
+}
 
 .block{width:30px;height:30px;position:absolute;bottom:0;}
 .red{background:red;}
 .blue{background:blue;}
 .goal{background:lime;}
 .spike{background:orange;clip-path:polygon(50% 0%,0% 100%,100% 100%);}
-.platform{background:#888;height:10px;}
+.platform{background:#aaa;height:10px;}
 .portal{background:purple;border-radius:50%;}
 .boss{background:white;width:40px;height:40px;}
 
-#player{width:30px;height:30px;position:absolute;bottom:0;left:20px;border-radius:8px;}
+#player{
+ width:30px;height:30px;
+ position:absolute;bottom:0;left:20px;
+ border-radius:8px;
+}
 
-button{padding:10px;margin:5px;background:#222;color:white;border:none;border-radius:6px;}
+button{
+ padding:10px;margin:5px;
+ border:none;border-radius:6px;
+ background:#222;color:white;
+ font-weight:bold;
+ cursor:pointer;
+}
 
-#levelSelect{display:none;max-width:500px;margin:auto;}
+#levelSelect{display:none;max-width:520px;margin:auto;}
 .levelBtn{width:45px;height:45px;margin:4px;position:relative;}
 .check{position:absolute;top:2px;right:4px;color:lime;font-size:12px;}
 
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);justify-content:center;align-items:center;}
-.modalBox{background:#111;padding:20px;border:2px solid red;border-radius:8px;}
+.modal{
+ display:none;position:fixed;top:0;left:0;
+ width:100%;height:100%;
+ background:rgba(0,0,0,0.7);
+ justify-content:center;align-items:center;
+}
+.modalBox{
+ background:#111;padding:20px;border:2px solid red;border-radius:8px;
+}
 
-#finalPopup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000;padding:30px;border:3px solid gold;}
+#finalPopup{
+ display:none;position:fixed;
+ top:50%;left:50%;
+ transform:translate(-50%,-50%);
+ background:#000;padding:30px;
+ border:3px solid gold;
+}
+
+#controls{
+ position:fixed;bottom:10px;width:100%;display:none;
+}
+.ctrl{width:60px;height:60px;margin:5px;}
 </style>
 </head>
 
@@ -45,8 +79,8 @@ button{padding:10px;margin:5px;background:#222;color:white;border:none;border-ra
 <h1>🎮 Color Split</h1>
 
 <div id="menu">
-<button onclick="showLevels()">🎯 Levels</button>
-<button onclick="startGame(1)">▶️ Start</button>
+ <button onclick="showLevels()">🎯 Levels</button>
+ <button onclick="startGame(1)">▶️ Start</button>
 </div>
 
 <div id="levelSelect"></div>
@@ -54,21 +88,28 @@ button{padding:10px;margin:5px;background:#222;color:white;border:none;border-ra
 <div id="game"></div>
 
 <div id="inGameMenu" style="display:none;">
-<button onclick="restartGame()">🔄 Restart</button>
-<button onclick="exitGame()">🚪 Exit</button>
+ <button onclick="restartGame()">🔄 Restart</button>
+ <button onclick="exitGame()">🚪 Exit</button>
 </div>
 
 <div id="gameOverModal" class="modal">
-<div class="modalBox">
-<h2>💀 Game Over</h2>
-<button onclick="restartGame()">Restart</button>
-<button onclick="exitGame()">Menu</button>
-</div>
+ <div class="modalBox">
+  <h2>💀 Game Over</h2>
+  <button onclick="restartGame()">Restart</button>
+  <button onclick="exitGame()">Menu</button>
+ </div>
 </div>
 
 <div id="finalPopup">
-<h2>🎉 You completed all 50 levels!</h2>
-<button onclick="exitGame()">Menu</button>
+ <h2>🎉 You completed all 50 levels!</h2>
+ <button onclick="exitGame()">Menu</button>
+</div>
+
+<div id="controls">
+ <button class="ctrl" onclick="move(-1)">⬅️</button>
+ <button class="ctrl" onclick="jump()">⬆️</button>
+ <button class="ctrl" onclick="move(1)">➡️</button>
+ <button class="ctrl" onclick="switchColor()">🎨</button>
 </div>
 
 <script>
@@ -86,7 +127,7 @@ let blocks=[];
 
 let completed = JSON.parse(localStorage.getItem("cs_levels")) || {};
 
-/* 🎯 FIXED LEVELS (NO RANDOM) */
+/* 🎯 FULL LEVEL DATA (NO RANDOM) */
 const levels = {
 1:[{type:"red",x:150},{type:"goal",x:500}],
 2:[{type:"blue",x:150},{type:"red",x:250},{type:"goal",x:500}],
@@ -98,13 +139,11 @@ const levels = {
 8:[{type:"platform",x:250,y:90},{type:"goal",x:520}],
 9:[{type:"red",x:120},{type:"blue",x:240},{type:"spike",x:360},{type:"goal",x:520}],
 10:[{type:"portalA",x:100},{type:"portalB",x:420},{type:"spike",x:250},{type:"goal",x:520}],
-
-/* continue structured patterns */
 49:[{type:"boss",x:250},{type:"goal",x:520}],
 50:[{type:"boss",x:200},{type:"boss",x:350},{type:"goal",x:520}]
 };
 
-/* fill remaining levels deterministically */
+/* Fill remaining levels deterministically */
 for(let i=1;i<=50;i++){
  if(!levels[i]){
   levels[i]=[
@@ -116,9 +155,10 @@ for(let i=1;i<=50;i++){
  }
 }
 
-/* THEME */
+/* 🎨 THEME SYSTEM */
 function setTheme(){
- document.body.className="";
+ document.body.classList.remove("menuTheme","easy","medium","hard","extreme","bossTheme");
+
  if(currentLevel<=12) document.body.classList.add("easy");
  else if(currentLevel<=24) document.body.classList.add("medium");
  else if(currentLevel<=36) document.body.classList.add("hard");
@@ -126,12 +166,13 @@ function setTheme(){
  else document.body.classList.add("bossTheme");
 }
 
-/* MENU */
+/* 🎯 LEVEL SELECT */
 function showLevels(){
  document.getElementById("menu").style.display="none";
+
  let grid=document.getElementById("levelSelect");
  grid.style.display="block";
- grid.innerHTML="";
+ grid.innerHTML="<h2>Select Level</h2>";
 
  for(let i=1;i<=50;i++){
   let btn=document.createElement("button");
@@ -150,7 +191,7 @@ function showLevels(){
  }
 }
 
-/* START */
+/* ▶️ START */
 function startGame(lvl){
  currentLevel=lvl;
  lives=3;
@@ -158,12 +199,14 @@ function startGame(lvl){
  document.getElementById("menu").style.display="none";
  document.getElementById("levelSelect").style.display="none";
  document.getElementById("inGameMenu").style.display="block";
+ document.getElementById("controls").style.display="block";
  game.style.display="block";
 
  running=true;
  loadLevel();
 }
 
+/* 🔄 RESTART */
 function restartGame(){
  lives=3;
  running=true;
@@ -171,18 +214,21 @@ function restartGame(){
  loadLevel();
 }
 
+/* 🚪 EXIT */
 function exitGame(){
  running=false;
  game.style.display="none";
  document.getElementById("menu").style.display="block";
  document.getElementById("levelSelect").style.display="none";
  document.getElementById("inGameMenu").style.display="none";
+ document.getElementById("controls").style.display="none";
  document.getElementById("gameOverModal").style.display="none";
  document.getElementById("finalPopup").style.display="none";
+
  document.body.className="menuTheme";
 }
 
-/* LOAD */
+/* LOAD LEVEL */
 function loadLevel(){
  game.innerHTML='<div id="player"></div>';
  player=document.getElementById("player");
@@ -213,7 +259,7 @@ function loadLevel(){
  updateHUD();
 }
 
-/* LOOP */
+/* GAME LOOP */
 setInterval(()=>{
  if(!running) return;
 
@@ -226,6 +272,13 @@ setInterval(()=>{
    b.x+=b.dir*3;
    if(b.x>450||b.x<100) b.dir*=-1;
    b.el.style.left=b.x+"px";
+  }
+
+  if(b.type==="platform"){
+   if(Math.abs(x-b.x)<30 && y<=b.y){
+    y=b.y;
+    vy=0;
+   }
   }
  });
 
@@ -243,8 +296,12 @@ document.addEventListener("keydown",(e)=>{
  if(e.key==="ArrowRight") x+=6;
  if(e.key==="ArrowLeft") x-=6;
  if(e.key==="ArrowUp" && y===0) vy=-14;
- if(e.code==="Space") mode=mode==="blue"?"red":"blue";
+ if(e.code==="Space") switchColor();
 });
+
+function move(d){x+=d*6;}
+function jump(){if(y===0)vy=-14;}
+function switchColor(){mode=mode==="blue"?"red":"blue";}
 
 /* COLLISION */
 function hit(px,b){return Math.abs(px-b.x)<25;}
@@ -273,6 +330,7 @@ function check(){
    }
 
    if(b.type==="portalA" && portalB) x=portalB.x;
+
    if(b.type==="spike"||b.type==="boss") damage();
    if(b.type==="red" && mode!=="red") damage();
    if(b.type==="blue" && mode!=="blue") damage();
