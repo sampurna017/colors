@@ -6,15 +6,15 @@
 <title>Color Split</title>
 
 <style>
-body{margin:0;font-family:sans-serif;text-align:center;color:white;transition:0.5s;overflow:hidden;}
-.menuTheme{background:linear-gradient(#0a0a0a,#1a1a2e);}
-.easy{background:linear-gradient(#003,#0a5);}
-.medium{background:linear-gradient(#220,#a60);}
-.hard{background:linear-gradient(#200,#600);}
-.extreme{background:#050505;}
+body{margin:0;font-family:sans-serif;text-align:center;color:white;transition:0.5s;}
+.menuTheme{background:#111;}
+.easy{background:#003;}
+.medium{background:#220;}
+.hard{background:#200;}
+.extreme{background:#000;}
 .boss{background:radial-gradient(circle,#111,#000);}
 
-#game{width:95vw;max-width:520px;height:280px;margin:60px auto;border:2px solid white;position:relative;display:none;}
+#game{width:95vw;max-width:520px;height:280px;margin:60px auto;border:2px solid white;position:relative;display:none;overflow:hidden;}
 
 .block{width:30px;height:30px;position:absolute;bottom:0;}
 .red{background:red;}
@@ -22,24 +22,29 @@ body{margin:0;font-family:sans-serif;text-align:center;color:white;transition:0.
 .goal{background:lime;}
 .spike{background:orange;clip-path:polygon(50% 0%,0% 100%,100% 100%);}
 
+.platform{
+ background:#888;
+ height:10px;
+}
+
+.portal{
+ background:purple;
+ border-radius:50%;
+}
+
+.bossEnemy{
+ background:white;
+ width:40px;height:40px;
+}
+
 #player{width:30px;height:30px;position:absolute;bottom:0;left:20px;border-radius:8px;}
 
-button{padding:10px;margin:5px;border:none;border-radius:6px;background:#222;color:white;}
-
-#levelSelect{display:none;}
-.levelBtn{width:45px;height:45px;margin:4px;position:relative;}
-.check{position:absolute;top:2px;right:4px;color:lime;}
-
-.particle{position:absolute;width:6px;height:6px;border-radius:50%;animation:fade 0.6s forwards;}
-@keyframes fade{to{opacity:0;transform:translateY(-20px);}}
+button{padding:10px;margin:5px;background:#222;color:white;border:none;}
 
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);justify-content:center;align-items:center;}
 .modalBox{background:#111;padding:20px;border:2px solid red;}
 
 #finalPopup{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#000;padding:30px;border:3px solid gold;}
-
-#controls{position:fixed;bottom:10px;width:100%;display:none;}
-.ctrl{width:60px;height:60px;margin:5px;}
 </style>
 </head>
 
@@ -48,11 +53,9 @@ button{padding:10px;margin:5px;border:none;border-radius:6px;background:#222;col
 <h1>🎮 Color Split</h1>
 
 <div id="menu">
-<button onclick="showLevels()">🎯 Levels</button>
 <button onclick="startGame(1)">▶️ Start</button>
 </div>
 
-<div id="levelSelect"></div>
 <div id="hud"></div>
 <div id="game"></div>
 
@@ -70,16 +73,8 @@ button{padding:10px;margin:5px;border:none;border-radius:6px;background:#222;col
 </div>
 
 <div id="finalPopup">
-<h2>🎉 Congratulations!</h2>
-<p>You completed all 50 levels!</p>
+<h2>🎉 Completed All Levels!</h2>
 <button onclick="exitGame()">Menu</button>
-</div>
-
-<div id="controls">
-<button class="ctrl" onclick="move(-1)">⬅️</button>
-<button class="ctrl" onclick="jump()">⬆️</button>
-<button class="ctrl" onclick="move(1)">➡️</button>
-<button class="ctrl" onclick="switchColor()">🎨</button>
 </div>
 
 <script>
@@ -90,85 +85,74 @@ let x=20,y=0,vy=0;
 let gravity=0.8;
 
 let mode="blue";
-let level=1;
 let currentLevel=1;
 let lives=3;
-let speed=7;
+let speed=6;
 
 let running=false;
 let blocks=[];
 
-let completed = JSON.parse(localStorage.getItem("cs_levels")) || {};
+/* LEVEL DATA WITH NEW MECHANICS */
+const levels = {
 
-/* SOUND */
-function beep(f){
- let ctx=new AudioContext();
- let o=ctx.createOscillator();
- o.frequency.value=f;
- o.connect(ctx.destination);
- o.start();
- setTimeout(()=>o.stop(),100);
-}
+1:[{type:"red",x:150},{type:"goal",x:500}],
 
-/* EFFECTS */
-function particles(px,py,color){
- for(let i=0;i<8;i++){
-  let p=document.createElement("div");
-  p.className="particle";
-  p.style.background=color;
-  p.style.left=px+"px";
-  p.style.bottom=py+"px";
-  game.appendChild(p);
-  setTimeout(()=>p.remove(),600);
+5:[
+ {type:"platform",x:200,y:60},
+ {type:"blue",x:300},
+ {type:"goal",x:500}
+],
+
+10:[
+ {type:"portalA",x:150},
+ {type:"portalB",x:400},
+ {type:"goal",x:520}
+],
+
+20:[
+ {type:"platform",x:150,y:80},
+ {type:"spike",x:300},
+ {type:"goal",x:520}
+],
+
+49:[
+ {type:"boss",x:300},
+ {type:"goal",x:520}
+],
+
+50:[
+ {type:"boss",x:250},
+ {type:"boss",x:350},
+ {type:"goal",x:520}
+]
+};
+
+/* AUTO FILL REST */
+for(let i=1;i<=50;i++){
+ if(!levels[i]){
+  levels[i]=[
+   {type:["red","blue","spike"][Math.floor(Math.random()*3)],x:150},
+   {type:["red","blue","spike"][Math.floor(Math.random()*3)],x:250},
+   {type:"goal",x:520}
+  ];
  }
 }
 
 /* THEME */
-function setTheme(t){
- document.body.className="";
- document.body.classList.add(t);
-}
-function getDifficulty(){
- if(currentLevel<=12) return "easy";
- if(currentLevel<=24) return "medium";
- if(currentLevel<=36) return "hard";
- if(currentLevel<=48) return "extreme";
- return "boss";
-}
-
-/* MENU */
-function showLevels(){
- document.getElementById("menu").style.display="none";
- let grid=document.getElementById("levelSelect");
- grid.style.display="block";
- grid.innerHTML="";
-
- for(let i=1;i<=50;i++){
-  let btn=document.createElement("button");
-  btn.className="levelBtn";
-  btn.innerText=i;
-
-  if(completed[i]){
-   let mark=document.createElement("span");
-   mark.className="check";
-   mark.innerText="✔";
-   btn.appendChild(mark);
-  }
-
-  btn.onclick=()=>startGame(i);
-  grid.appendChild(btn);
- }
+function setTheme(){
+ if(currentLevel<=12) document.body.className="easy";
+ else if(currentLevel<=24) document.body.className="medium";
+ else if(currentLevel<=36) document.body.className="hard";
+ else if(currentLevel<=48) document.body.className="extreme";
+ else document.body.className="boss";
 }
 
 /* START */
 function startGame(lvl){
  currentLevel=lvl;
- level=lvl;
  lives=3;
 
  document.getElementById("menu").style.display="none";
- document.getElementById("levelSelect").style.display="none";
- document.getElementById("controls").style.display="block";
  document.getElementById("inGameMenu").style.display="block";
  game.style.display="block";
 
@@ -180,33 +164,20 @@ function restartGame(){
  lives=3;
  running=true;
  document.getElementById("gameOverModal").style.display="none";
- loadLevel(); // SAME LEVEL (FIXED)
+ loadLevel();
 }
 
 function exitGame(){
  running=false;
  game.style.display="none";
  document.getElementById("menu").style.display="block";
- document.getElementById("controls").style.display="none";
  document.getElementById("inGameMenu").style.display="none";
- document.getElementById("levelSelect").style.display="none";
  document.getElementById("gameOverModal").style.display="none";
  document.getElementById("finalPopup").style.display="none";
- setTheme("menuTheme");
+ document.body.className="menuTheme";
 }
 
-/* LEVEL */
-function generateLevel(){
- let arr=[];
- for(let i=0;i<4;i++){
-  let types=["red","blue","spike"];
-  let t=types[Math.floor(Math.random()*types.length)];
-  arr.push({type:t,x:120+i*60});
- }
- arr.push({type:"goal",x:500});
- return arr;
-}
-
+/* LOAD */
 function loadLevel(){
  game.innerHTML='<div id="player"></div>';
  player=document.getElementById("player");
@@ -214,35 +185,29 @@ function loadLevel(){
  x=20;y=0;vy=0;
  blocks=[];
 
- let data=generateLevel();
+ let data=levels[currentLevel];
 
  data.forEach(b=>{
   let d=document.createElement("div");
-  d.className="block "+b.type;
+
+  if(b.type==="platform"){
+   d.className="block platform";
+   d.style.bottom=b.y+"px";
+  }else if(b.type==="portalA"||b.type==="portalB"){
+   d.className="block portal";
+  }else if(b.type==="boss"){
+   d.className="block bossEnemy";
+  }else{
+   d.className="block "+b.type;
+  }
+
   d.style.left=b.x+"px";
   game.appendChild(d);
-  blocks.push({el:d,...b});
+  blocks.push({el:d,...b,dir:1});
  });
 
- setTheme(getDifficulty());
+ setTheme();
  updateHUD();
-}
-
-/* CONTROLS */
-document.addEventListener("keydown",(e)=>{
- if(!running) return;
-
- if(e.key==="ArrowRight") x+=speed;
- if(e.key==="ArrowLeft") x-=speed;
- if(e.key==="ArrowUp" && y===0){vy=-14;beep(500);}
- if(e.code==="Space") switchColor();
-});
-
-function move(d){x+=d*speed;}
-function jump(){if(y===0){vy=-14;beep(500);}}
-function switchColor(){
- mode=mode==="blue"?"red":"blue";
- player.style.background=mode;
 }
 
 /* LOOP */
@@ -253,57 +218,87 @@ setInterval(()=>{
  y+=vy;
  if(y>0){y=0;vy=0;}
 
+ /* platform support */
+ blocks.forEach(b=>{
+  if(b.type==="platform"){
+   if(Math.abs(x-b.x)<30 && y<=b.y){
+    y=b.y;
+    vy=0;
+   }
+  }
+
+  if(b.type==="boss"){
+   b.x+=b.dir*3;
+   if(b.x>450||b.x<100) b.dir*=-1;
+   b.el.style.left=b.x+"px";
+  }
+ });
+
  player.style.left=x+"px";
  player.style.bottom=y+"px";
+ player.style.background=mode;
 
  check();
 },30);
+
+/* CONTROLS */
+document.addEventListener("keydown",(e)=>{
+ if(!running) return;
+
+ if(e.key==="ArrowRight") x+=speed;
+ if(e.key==="ArrowLeft") x-=speed;
+ if(e.key==="ArrowUp" && y===0) vy=-14;
+ if(e.code==="Space") mode=mode==="blue"?"red":"blue";
+});
 
 /* COLLISION */
 function hit(px,b){return Math.abs(px-b.x)<25;}
 
 function check(){
+ let portalA=null, portalB=null;
+
+ blocks.forEach(b=>{
+  if(b.type==="portalA") portalA=b;
+  if(b.type==="portalB") portalB=b;
+ });
+
  blocks.forEach(b=>{
   if(hit(x,b)){
 
    if(b.type==="goal"){
-    completed[currentLevel]=true;
-    localStorage.setItem("cs_levels",JSON.stringify(completed));
-
-    level++;
-    currentLevel=level;
-
-    if(level>50){
+    currentLevel++;
+    if(currentLevel>50){
      running=false;
      document.getElementById("finalPopup").style.display="block";
     }else loadLevel();
    }
 
-   if(b.type==="spike") damage();
+   if(b.type==="portalA" && portalB){
+    x=portalB.x;
+   }
+
+   if(b.type==="spike"||b.type==="boss"){
+    damage();
+   }
+
    if(b.type==="red" && mode!=="red") damage();
    if(b.type==="blue" && mode!=="blue") damage();
   }
  });
 }
 
-/* DAMAGE */
 function damage(){
  lives--;
- particles(x,y,"red");
- beep(200);
-
  if(lives<=0){
   running=false;
   document.getElementById("gameOverModal").style.display="flex";
  }
-
  updateHUD();
 }
 
-/* HUD */
 function updateHUD(){
  document.getElementById("hud").innerText =
- "Level:"+currentLevel+" | "+getDifficulty().toUpperCase()+" | Lives:"+lives;
+ "Level:"+currentLevel+" | Lives:"+lives;
 }
 </script>
 
